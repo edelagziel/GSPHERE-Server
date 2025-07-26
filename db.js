@@ -1,21 +1,27 @@
-const mysql = require("mysql2/promise");
+const PostgreSQL  = require("pg");
 
-console.log(" DB Config:", {
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
+
+const pool = new PostgreSQL.Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: 10, 
+  idleTimeoutMillis: 30000, // כמה זמן חיבור לא פעיל נשאר לפני סגירה
+  ssl: { rejectUnauthorized: false },
 });
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
+
+
+pool.connect()
+  .then(() => {
+    console.log("connected to the database");
+  })
+  .catch(err => {
+    console.error("Error connecting to the database", err);
+  });
+
+
+
+
+
 
 
 module.exports = pool;
