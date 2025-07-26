@@ -1,17 +1,53 @@
 //user model כל התקשורת עם הדאטה בייס עם המשתמשים
 
-const DB = require("../db");
+const pool = require("../db");
 
-const creatUser = async (Email, Password, role) => 
-{
-    const [result] = await DB.query("INSERT INTO users (Email, Password, role) VALUES (?, ?, ?)", [Email, Password, role]);
-    return result;
-};
+
+
+const  createUser = (first_name, last_name, email, passwordHash, roleId) => {
+    const query = "INSERT INTO users (first_name, last_name, email, password_hash, role) VALUES ($1, $2, $3, $4, $5) RETURNING *";
+    const values = [first_name, last_name, email, passwordHash, roleId];
+
+
+
+    return pool.query(query, values)
+    .then(result => {
+      console.log(result.rows[0]);
+      return result.rows[0];
+    })
+    .catch(err => {
+      console.error("Error inserting user:", err.stack);
+      throw err;
+    });
+}
+   
+  
+
+
+
+
+
+
+
+
 
 const getUser = async (Email) => 
 {
-    const [result] = await DB.query("SELECT email, user_role FROM users WHERE email = ?", [Email]);
-    return result;
-};
+    const query = "SELECT * FROM users WHERE email = $1" ;
+    const values=[Email];
+   try
+   {
+     const result=await pool.query(query, values);
+      console.log(result.rows[0]);
+      return result.rows[0];
+   } 
+   catch(err)
+   {
+    console.error("Error inserting user:", err.stack);
+    throw err;
+  }
+}
+  
 
-module.exports = { creatUser, getUser};
+
+module.exports = { createUser, getUser};
