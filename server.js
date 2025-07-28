@@ -18,11 +18,13 @@ app.use(cookieParser());
 //Routes
 app.use("/api/auth", require("./routes/auth"));
 app.use(verifyToken);
-app.use("/api/projects", require("./routes/projects"));
+app.use("/api/projects", require("./routes/prodects/projects"));
+// app.use("/api/joubs",require("./routes/joubs"));
 
 
 // app.use("/api/posts", require("./routes/posts"));
 // app.use("/api/comments", require("./routes/comments"));
+
 // app.use("/api/likes", require("./routes/likes"));
 // app.use("/api/follows", require("./routes/follows"));
 
