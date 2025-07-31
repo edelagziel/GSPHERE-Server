@@ -144,6 +144,19 @@ async function isRecruiter(userId) {
     return pool.query(query, values);
 
   }
+
+
+  async function applyJobToPost(jobId, userId)
+   {
+    const query = `
+      INSERT INTO JobApplications (job_post_id, user_id, status_id)
+      VALUES ($1, $2, 1)
+      ON CONFLICT (job_post_id, user_id) DO NOTHING
+      RETURNING *;
+    `;
+    const values = [jobId, userId];
+    return pool.query(query, values);
+  }
   
 
 module.exports = {
@@ -153,5 +166,6 @@ module.exports = {
     updateJobStatus,
     getMyJobs,
     getActiveJobs,
-    getJobCandidates
+    getJobCandidates,
+    applyJobToPost
 };

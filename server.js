@@ -21,6 +21,8 @@ app.use(verifyToken);
 app.use("/api/projects", require("./routes/prodects/projects"));
 app.use("/api/jobs",require("./routes/jobs"));
 app.use("/api/news", require("./routes/news.routes"));
+app.use("/api/profile", require("./routes/routes.profile"));
+
 
 // app.use("/api/posts", require("./routes/posts"));
 // app.use("/api/comments", require("./routes/comments"));

@@ -4,13 +4,11 @@ require("dotenv").config();
 async function getNews(req, res) {
     const apiKey = process.env.NEWS_API_KEY;
   
-    // 🟨 פרמטרים נפרדים לסינון
     const query = "gaming";           // מה מחפשים
     const language = "en";            // שפה
     const sortBy = "publishedAt";     // מיון
     const pageSize = 5;               // כמות תוצאות
   
-    // 🟦 בניית ה־URL
     const url = `https://newsapi.org/v2/everything?q=${query}&language=${language}&sortBy=${sortBy}&pageSize=${pageSize}&apiKey=${apiKey}`;
   
     try {

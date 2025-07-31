@@ -1,10 +1,11 @@
 const jobsRouters = require("express").Router({ mergeParams: true });
 
-
 const jobsController = require("../controllers/jobsController");
 
 
 jobsRouters.post("/", jobsController.createJobController);
+
+jobsRouters.post("/:id/apply", jobsController.applyToJob);
 
 jobsRouters.put("/:id", jobsController.updateJobController);
 
@@ -17,6 +18,9 @@ jobsRouters.get("/my", jobsController.getMyJobsController);
 jobsRouters.get("/active", jobsController.getActiveJobsController);
 
 jobsRouters.get("/:id/candidates", jobsController.getJobCandidatesController);
+
+
+
 
 
 

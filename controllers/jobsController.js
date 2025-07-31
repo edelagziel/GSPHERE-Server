@@ -1,17 +1,5 @@
 
-// Basic controller functions for jobs
-
-// Placeholder functions for job operations
-const {
-    createJob,
-    updateJob,
-    deleteJob,
-    updateJobStatus,
-    getMyJobs,
-    getActiveJobs,
-    getJobCandidates
-} = require("../models/jobsModel");
-// Controllers for jobs, calling the corresponding model functions
+const {createJob,updateJob,deleteJob,updateJobStatus,getMyJobs,getActiveJobs,getJobCandidates,applyJobToPost} = require("../models/jobsModel");
 
 async function createJobController(req, res)
  {
@@ -158,6 +146,27 @@ async function getJobCandidatesController(req, res)
 }
 
 
+async function applyToJob(req, res) 
+{
+    try 
+    {
+        const { id } = req.params; 
+        const userId = req.user.user_id ;
+    
+        const result = await applyJobToPost(id, userId);
+        if (result.rowCount === 0) 
+        {
+            return res.status(400).json({ message: "Failed to apply to job" });
+        }
+        res.status(200).json({ message: "Applied to job successfully", application: result.rows[0] });
+    } 
+    catch (error) 
+    {
+        res.status(500).json({ error: "Failed to apply to job", details: error.message });
+    }
+}
+
+
 
 module.exports = {
     createJobController,
@@ -166,6 +175,7 @@ module.exports = {
     updateJobStatusController,
     getMyJobsController,
     getActiveJobsController,
-    getJobCandidatesController
+    getJobCandidatesController,
+    applyToJob
 };
 
