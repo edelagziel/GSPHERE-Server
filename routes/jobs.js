@@ -12,13 +12,10 @@ jobsRouters.delete("/:id", jobsController.deleteJobController);
 
 jobsRouters.patch("/:id/status", jobsController.updateJobStatusController);
 
-// קבלת רשימת כל המשרות של המגייס (כולל סגורות ופתוחות)
 jobsRouters.get("/my", jobsController.getMyJobsController);
 
-// קבלת רשימת המשרות הפעילות בלבד (פתוחות לגיוס)
 jobsRouters.get("/active", jobsController.getActiveJobsController);
 
-// קבלת רשימת מועמדים למשרה מסוימת
 jobsRouters.get("/:id/candidates", jobsController.getJobCandidatesController);
 
 
