@@ -9,7 +9,8 @@ const jwt = require("jsonwebtoken");
 const saltRounds=10;
 
 
-async function register(req, res)
+
+async function register(req, res,next)
  {
     try 
     {
@@ -22,7 +23,9 @@ async function register(req, res)
        const hashedPassword = await bcrypt.hash(password, saltRounds);
         if(await userModel.getUser(email))return res.status(400).json({ error: "User already exists" }); 
          const user = await userModel.createUser(first_name,last_name,email,hashedPassword,roleId);
-        res.status(201).json(`register "+${JSON.stringify(user)}`);
+         req.user = user;
+         next();
+        // res.status(201).json(`register "+${JSON.stringify(user)}`);
     } 
     
     catch (error)
@@ -59,6 +62,8 @@ async function login(req, res)
             sameSite: "lax",
             maxAge: 3*60*60*1000
           }).json({ message: "Login successful" });
+
+
     }
     catch(err)
     {

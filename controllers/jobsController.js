@@ -1,17 +1,5 @@
 
-// Basic controller functions for jobs
-
-// Placeholder functions for job operations
-const {
-    createJob,
-    updateJob,
-    deleteJob,
-    updateJobStatus,
-    getMyJobs,
-    getActiveJobs,
-    getJobCandidates
-} = require("../models/jobsModel");
-// Controllers for jobs, calling the corresponding model functions
+const {createJob,updateJob,deleteJob,updateJobStatus,getMyJobs,getActiveJobs,getJobCandidates,applyJobToPost} = require("../models/jobsModel");
 
 async function createJobController(req, res)
  {
@@ -70,6 +58,7 @@ async function deleteJobController(req, res)
  {
     try 
     {
+        console.log(req.params);
         const { id } = req.params;
         JobId=parseInt(id);
         const result = await deleteJob(JobId);
@@ -82,27 +71,41 @@ async function deleteJobController(req, res)
     }
 }
 
-async function updateJobStatusController(req, res) {
-    try {
+async function updateJobStatusController(req, res) 
+{
+    try 
+    {
+        console.log(req.params,req.body);
         const { id } = req.params;
         const { status } = req.body;
-        const result = await updateJobStatus(id, status);
-        res.status(200).json(result);
-    } catch (error) {
+        const jobsstatus= parseInt(status);
+        const result = await updateJobStatus(id, jobsstatus);
+        res.status(200).json({ message: "Job status updated successfully", job: result.rows[0] });
+    } 
+    catch (error) 
+    {
         res.status(500).json({ error: "Failed to update job status", details: error.message });
     }
 }
 
-async function getMyJobsController(req, res) {
-    try {
-        // Assuming user id is available in req.user or req.body/userId
-        const userId = req.user?.id || req.body.userId || req.query.userId;
-        if (!userId) {
+async function getMyJobsController(req, res) 
+{
+    try 
+    {
+        const userId = req.user.user_id;
+        if (!userId ) 
+        {
             return res.status(400).json({ error: "User ID is required" });
         }
         const result = await getMyJobs(userId);
-        res.status(200).json(result);
-    } catch (error) {
+        if (result.rowCount === 0)
+        {
+            return res.status(404).json({ message: "No jobs found", job: [] });
+        }
+      return res.status(200).json({ message: "Jobs fetched successfully", job: result.rows });
+    }
+     catch (error)
+    {
         res.status(500).json({ error: "Failed to get jobs for recruiter", details: error.message });
     }
 }
@@ -112,7 +115,11 @@ async function getActiveJobsController(req, res)
     try 
     {
         const result = await getActiveJobs();
-        res.status(200).json(result);
+        if (result.rowCount  === 0) 
+        {
+            return res.status(404).json({ message: "No active jobs found", jobs: [] });
+        }
+        res.status(200).json({ message: "Active jobs fetched successfully", jobs:result.rows });
     } 
     catch (error)
     {
@@ -122,12 +129,40 @@ async function getActiveJobsController(req, res)
 
 async function getJobCandidatesController(req, res) 
 {
-    try {
+    try
+    {
         const { id } = req.params;
         const result = await getJobCandidates(id);
-        res.status(200).json(result);
-    } catch (error) {
+        if (result.rowCount === 0)
+        {
+            return res.status(404).json({ message: "No candidates found", candidates: [] });
+        }
+        res.status(200).json({ message: "Candidates fetched successfully", candidates: result.rows });
+    } 
+    catch (error) 
+    {
         res.status(500).json({ error: "Failed to get job candidates", details: error.message });
+    }
+}
+
+
+async function applyToJob(req, res) 
+{
+    try 
+    {
+        const { id } = req.params; 
+        const userId = req.user.user_id ;
+    
+        const result = await applyJobToPost(id, userId);
+        if (result.rowCount === 0) 
+        {
+            return res.status(400).json({ message: "Failed to apply to job" });
+        }
+        res.status(200).json({ message: "Applied to job successfully", application: result.rows[0] });
+    } 
+    catch (error) 
+    {
+        res.status(500).json({ error: "Failed to apply to job", details: error.message });
     }
 }
 
@@ -140,6 +175,7 @@ module.exports = {
     updateJobStatusController,
     getMyJobsController,
     getActiveJobsController,
-    getJobCandidatesController
+    getJobCandidatesController,
+    applyToJob
 };
 
