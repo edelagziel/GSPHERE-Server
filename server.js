@@ -19,7 +19,7 @@ app.use(cookieParser());
 app.use("/api/auth", require("./routes/auth"));
 app.use(verifyToken);
 app.use("/api/projects", require("./routes/prodects/projects"));
-// app.use("/api/joubs",require("./routes/joubs"));
+app.use("/api/jobs",require("./routes/jobs"));
 
 
 // app.use("/api/posts", require("./routes/posts"));

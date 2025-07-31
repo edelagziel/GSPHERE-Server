@@ -25,12 +25,6 @@ const  createUser = (first_name, last_name, email, passwordHash, roleId) => {
 
 
 
-
-
-
-
-
-
 const getUser = async (Email) => 
 {
     const query = "SELECT * FROM users WHERE email = $1" ;

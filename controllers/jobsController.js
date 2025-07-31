@@ -1,0 +1,145 @@
+
+// Basic controller functions for jobs
+
+// Placeholder functions for job operations
+const {
+    createJob,
+    updateJob,
+    deleteJob,
+    updateJobStatus,
+    getMyJobs,
+    getActiveJobs,
+    getJobCandidates
+} = require("../models/jobsModel");
+// Controllers for jobs, calling the corresponding model functions
+
+async function createJobController(req, res)
+ {
+    try 
+    {
+        const userId = req.user.user_id;
+        console.log(userId);
+        console.log(req.body);
+        const { title, description, status_id, location_id, deadline, skills } = req.body;
+        if (!Array.isArray(skills)) 
+        {
+            throw new Error("skills must be an array of integers");
+        }
+
+        const result = await createJob({
+            userId,
+            title,
+            description,
+            status_id,
+            location_id,
+            deadline,
+            skills 
+        });
+
+        if (result.JobPosts.rows.length === 0)
+        {
+            return res.status(400).json({ error: "Failed to create job. Please check the provided job details." });
+        }
+        res.status(201).json({ message: "Job created successfully", job: result.JobPosts,jobSkill: result.JobPostSkills.skillIds });
+    } 
+    catch (error)
+    {
+        res.status(500).json({ error: "Failed to create job", details: error.message });
+    }
+}
+
+
+
+async function updateJobController(req, res)
+{
+    // TODO: validate title change is minor (use levenshtein distance)
+    try 
+    {
+        const { id } = req.params;
+        const {title,description,deadline} = req.body;
+        const result = await updateJob(id,title,description,deadline);
+        res.status(200).json({message : "Job update successfully",info:result.rows[0]});
+    } 
+    catch (error)
+    {
+        res.status(500).json({ error: "Failed to update job", details: error.message });
+    }
+}
+
+async function deleteJobController(req, res)
+ {
+    try 
+    {
+        const { id } = req.params;
+        JobId=parseInt(id);
+        const result = await deleteJob(JobId);
+        if(result.rowCount===0) return res.status(404).json({error:"job not found"});
+        return res.status(200).json({ message: "Job deleted successfully" });
+    } 
+    catch (error)
+    {
+        res.status(500).json({ error: "Failed to delete job", details: error.message });
+    }
+}
+
+async function updateJobStatusController(req, res) {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        const result = await updateJobStatus(id, status);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to update job status", details: error.message });
+    }
+}
+
+async function getMyJobsController(req, res) {
+    try {
+        // Assuming user id is available in req.user or req.body/userId
+        const userId = req.user?.id || req.body.userId || req.query.userId;
+        if (!userId) {
+            return res.status(400).json({ error: "User ID is required" });
+        }
+        const result = await getMyJobs(userId);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to get jobs for recruiter", details: error.message });
+    }
+}
+
+async function getActiveJobsController(req, res) 
+{
+    try 
+    {
+        const result = await getActiveJobs();
+        res.status(200).json(result);
+    } 
+    catch (error)
+    {
+        res.status(500).json({ error: "Failed to get active jobs", details: error.message });
+    }
+}
+
+async function getJobCandidatesController(req, res) 
+{
+    try {
+        const { id } = req.params;
+        const result = await getJobCandidates(id);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to get job candidates", details: error.message });
+    }
+}
+
+
+
+module.exports = {
+    createJobController,
+    updateJobController,
+    deleteJobController,
+    updateJobStatusController,
+    getMyJobsController,
+    getActiveJobsController,
+    getJobCandidatesController
+};
+
