@@ -62,7 +62,7 @@ async function login(req, res)
             sameSite: "lax",
             maxAge: 3*60*60*1000
           }).json({ message: "Login successful" });
-
+     
 
     }
     catch(err)
@@ -75,8 +75,8 @@ async function login(req, res)
 async function logout(req, res) 
 {
     res.clearCookie("token", {
-      httpOnly: true,
-      secure: true,
+      httpOnly: false,
+      secure: false,
       sameSite: "lax"
     });
     res.json({ message: "Logged out" });
