@@ -8,7 +8,7 @@ function verifyToken(req, res, next)
     try
     {
         validToken(token,req);
-        next();
+        return next();
     }
     catch(error)
     {
@@ -19,8 +19,8 @@ function verifyToken(req, res, next)
 
 function validToken(token,req)
 {
-        const decoded = jwt.verify(token,process.env.JWT_SECRET);
-        req.user=decoded;   
+    const decoded = jwt.verify(token,process.env.JWT_SECRET);
+    req.user=decoded;   
 }
 
 function newTokenNeed(req)
