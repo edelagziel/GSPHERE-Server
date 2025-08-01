@@ -9,7 +9,14 @@ const { verifyToken } = require("./middleware/authService");
 const app = express();
 const serverPort = process.env.PORT || 3000;
 
-app.use(cors());//response *
+// app.use(cors());//response *
+
+
+app.use(cors({
+    origin: "https://gsphere-client.onrender.com", 
+    credentials: true
+  }));
+
 // MIDDLEWARES
 app.use(express.urlencoded({ extended: true }));//help me parse the body of the request is coming as form and parse to obj 
 app.use(express.json());//help me parse the body of the request is coming as json and parse to obj 
@@ -17,11 +24,10 @@ app.use(express.json());//help me parse the body of the request is coming as jso
 app.use(cookieParser());
 //Routes
 app.use("/api/auth", require("./routes/auth"));
-app.use(verifyToken);
-app.use("/api/projects", require("./routes/prodects/projects"));
-app.use("/api/jobs",require("./routes/jobs"));
-app.use("/api/news", require("./routes/news.routes"));
-app.use("/api/profile", require("./routes/routes.profile"));
+app.use("/api/projects", verifyToken,require("./routes/prodects/projects"));
+app.use("/api/jobs",verifyToken,require("./routes/jobs"));
+app.use("/api/news", verifyToken,require("./routes/news.routes"));
+app.use("/api/profile", verifyToken,require("./routes/routes.profile"));
 
 
 // app.use("/api/posts", require("./routes/posts"));
