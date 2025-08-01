@@ -12,11 +12,10 @@ const serverPort = process.env.PORT || 3000;
 // app.use(cors());//response *
 
 app.use(cors({
-    origin: (origin, callback) => {
-      callback(null, true); // מאפשר כל origin (גם עם cookies)
-    },
+    origin: "https://gsphere-client.onrender.com", 
     credentials: true
   }));
+  
 // MIDDLEWARES
 app.use(express.urlencoded({ extended: true }));//help me parse the body of the request is coming as form and parse to obj 
 app.use(express.json());//help me parse the body of the request is coming as json and parse to obj 
