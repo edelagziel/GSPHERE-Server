@@ -38,8 +38,8 @@ async function register(req, res,next)
 async function login(req, res) 
 {
     userLogIn= newTokenNeed(req);
-    if(!userLogIn.needsToken)return res.status(200).json({massage:"user alredey logIn"});
-    console.log(`login reqwest body: ${JSON.stringify(req.body)}`);
+    // if(!userLogIn.needsToken)return res.status(200).json({massage:"user alredey logIn"});
+    // console.log(`login reqwest body: ${JSON.stringify(req.body)}`);
     try
     {
         const { email, password } = req.body;
