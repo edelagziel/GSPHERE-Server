@@ -56,9 +56,10 @@ async function login(req, res)
             };
 
            const token= jwt.sign(payLoad,process.env.JWT_SECRET,{ expiresIn:"3h" });
-           res.cookie("token", token, {
+           res.cookie("token", token, 
+            {
             httpOnly: true,
-            secure: false,
+            secure: true,
             sameSite: "lax",
             maxAge: 3*60*60*1000
           }).json({ message: "Login successful" });
@@ -75,8 +76,8 @@ async function login(req, res)
 async function logout(req, res) 
 {
     res.clearCookie("token", {
-      httpOnly: false,
-      secure: false,
+      httpOnly: true,
+      secure: true,
       sameSite: "lax"
     });
     res.json({ message: "Logged out" });
