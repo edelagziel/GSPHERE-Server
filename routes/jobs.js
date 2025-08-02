@@ -19,6 +19,8 @@ jobsRouters.get("/active", jobsController.getActiveJobsController);
 
 jobsRouters.get("/:id/candidates", jobsController.getJobCandidatesController);
 
+jobsRouters.get("/skills", jobsController.getSkillsController);
+
 
 
 

@@ -157,6 +157,16 @@ async function isRecruiter(userId) {
     const values = [jobId, userId];
     return pool.query(query, values);
   }
+
+  async function getAllSkills()
+  {
+    const query = `
+      SELECT id, name
+      FROM JobSkills
+      ORDER BY name ASC
+    `;
+    return pool.query(query);
+  }
   
 
 module.exports = {
@@ -167,5 +177,6 @@ module.exports = {
     getMyJobs,
     getActiveJobs,
     getJobCandidates,
-    applyJobToPost
+    applyJobToPost,
+    getAllSkills
 };
