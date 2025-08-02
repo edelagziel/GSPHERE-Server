@@ -55,15 +55,22 @@ async function login(req, res)
                 role:loginUser.role
             };
 
+
            const token= jwt.sign(payLoad,process.env.JWT_SECRET,{ expiresIn:"3h" });
-           res.cookie("token", token, 
+           res
+           .cookie("token", token, 
             {
             httpOnly: false,
             secure: true,
             sameSite: "none",
             maxAge: 3*60*60*1000
-          }).json({ message: "Login successful" });
-     
+          })
+          
+          .json({
+            message: "Login successful",
+            role: loginUser.role,
+            fullname: loginUser.first_name + " " + loginUser.last_name
+          });     
 
     }
     catch(err)
