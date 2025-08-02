@@ -38,8 +38,8 @@ async function register(req, res,next)
 async function login(req, res) 
 {
     userLogIn= newTokenNeed(req);
-    if(!userLogIn.needsToken)return res.status(400).json({error:"user alredey logIn"});
-    console.log(`login reqwest body: ${JSON.stringify(req.body)}`);
+    // if(!userLogIn.needsToken)return res.status(200).json({massage:"user alredey logIn"});
+    // console.log(`login reqwest body: ${JSON.stringify(req.body)}`);
     try
     {
         const { email, password } = req.body;
@@ -55,15 +55,22 @@ async function login(req, res)
                 role:loginUser.role
             };
 
+
            const token= jwt.sign(payLoad,process.env.JWT_SECRET,{ expiresIn:"3h" });
-           res.cookie("token", token, 
+           res
+           .cookie("token", token, 
             {
             httpOnly: false,
             secure: true,
             sameSite: "none",
             maxAge: 3*60*60*1000
-          }).json({ message: "Login successful" });
-     
+          })
+          
+          .json({
+            message: "Login successful",
+            role: loginUser.role,
+            fullname: loginUser.first_name + " " + loginUser.last_name
+          });     
 
     }
     catch(err)

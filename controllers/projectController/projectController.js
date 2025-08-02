@@ -109,10 +109,6 @@ async function getMyProjects(req, res)
     try 
     {
         const result = await getuserProject(req.user.user_id);
-        if (result.rows.length === 0) 
-        {
-            return res.status(404).json({ error: "user Project not found" });
-        }
         res.status(200).json({ message: "All My projects retrieved successfully", projects: result.rows});
     }
     catch(error)

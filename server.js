@@ -9,21 +9,25 @@ const { verifyToken } = require("./middleware/authService");
 const app = express();
 const serverPort = process.env.PORT || 3000;
 
+const corsOptions = {
+  origin: "https://gsphere-client.onrender.com",
+  credentials: true
+};
 
 
-app.use(cors({
-    origin: "https://gsphere-client.onrender.com", 
-    credentials: true
-  }));
+// app.use(cors({
+//     origin: "https://gsphere-client.onrender.com", 
+//     credentials: true
+//   }));
  
-  
+app.use(cors(corsOptions));
 
+  
 
 
 // MIDDLEWARES
 app.use(express.urlencoded({ extended: true }));//help me parse the body of the request is coming as form and parse to obj 
 app.use(express.json());//help me parse the body of the request is coming as json and parse to obj 
-// app.use(express.static(path.join(__dirname, "../frontend")));
 app.use(cookieParser());
 //Routes
 app.use("/api/auth", require("./routes/auth"));
@@ -33,11 +37,7 @@ app.use("/api/news", verifyToken,require("./routes/news.routes"));
 app.use("/api/profile", verifyToken,require("./routes/routes.profile"));
 
 
-// app.use("/api/posts", require("./routes/posts"));
-// app.use("/api/comments", require("./routes/comments"));
 
-// app.use("/api/likes", require("./routes/likes"));
-// app.use("/api/follows", require("./routes/follows"));
 
 app.listen(serverPort,()=>{
     console.log(`Server is running on port ${serverPort}`);
