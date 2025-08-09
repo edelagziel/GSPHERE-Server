@@ -33,16 +33,16 @@ const corsOptions =
 //   credentials: true
 // };
 
-
-app.options("all", (req, res) => {
-  res.header("Access-Control-Allow-Origin", req.headers.origin || "");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.sendStatus(204); // בלי גוף
-});
-
 app.use(cors(corsOptions));
+
+// app.options("all", (req, res) => {
+//   res.header("Access-Control-Allow-Origin", req.headers.origin || "");
+//   res.header("Access-Control-Allow-Credentials", "true");
+//   res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   res.sendStatus(204); // בלי גוף
+// });
+
 
 
 

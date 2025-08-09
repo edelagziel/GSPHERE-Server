@@ -113,6 +113,7 @@ async function getProjectById(req, res)
 }
 async function getMyProjects(req, res) 
 {
+    console.log("getMyProjects");
     try 
     {
         const result = await getuserProject(req.user.user_id);

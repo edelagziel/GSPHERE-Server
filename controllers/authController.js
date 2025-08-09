@@ -73,6 +73,8 @@ async function login(req, res)
             fullname: loginUser.first_name + " " + loginUser.last_name
           });     
 
+          console.log("Token Sanded");
+
     }
     catch(err)
     {
@@ -86,7 +88,7 @@ async function logout(req, res)
     res.clearCookie("token", {
       httpOnly: true,
       secure: true,
-      sameSite: "lax"
+      sameSite: "Lax"
     });
     res.json({ message: "Logged out" });
   }
