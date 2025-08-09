@@ -16,10 +16,10 @@ const corsOptions = {
 };
 
 
-// app.use(cors({
-//     origin: "https://gsphere-client.onrender.com", 
-//     credentials: true
-//   }));
+app.use(cors({
+    origin: "https://gsphere-client.onrender.com", 
+    credentials: true
+  }));
  
 app.use(cors(corsOptions));
 
