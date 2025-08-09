@@ -28,7 +28,20 @@ async function modifyProjectById(title, description, image_url, stage_id, visibi
 }
 
 async function getAll_Projects() {
-    const query = "SELECT * FROM projects ORDER BY created_at DESC";
+    const query = `
+        SELECT 
+            users.first_name, 
+            users.last_name, 
+            projects.id AS projectid, 
+            projects.owner_id, 
+            projects.title, 
+            projects.description, 
+            projects.image_url
+        FROM projects
+        JOIN users ON users.user_id = projects.owner_id
+        WHERE projects.visibility_id = 1
+        ORDER BY projects.created_at DESC
+    `;
     return pool.query(query);
 }
 
