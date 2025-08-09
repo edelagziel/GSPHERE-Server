@@ -15,9 +15,10 @@ const allowedOrigins = [
   "http://127.0.0.1:5500",
   "http://localhost:3000"
 ];
-const corsOptions = {
+
+const corsOptions = 
+{
   origin: (origin, cb) => {
-    // לאפליקציות סטטיות בלי origin (file://) או בבדיקות – נאפשר
     if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
     return cb(new Error("Not allowed by CORS"));
   },
@@ -25,12 +26,16 @@ const corsOptions = {
   methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
   allowedHeaders: ["Content-Type","Authorization"]
 };
+
+
 // const corsOptions = {
 //   origin: "https://gsphere-client.onrender.com",
 //   credentials: true
 // };
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+app.options
+// app.options("*", cors(corsOptions));
+
 
 
 // app.use(cors({
