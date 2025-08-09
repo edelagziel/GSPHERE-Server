@@ -11,9 +11,9 @@ const serverPort = process.env.PORT || 3000;
 
 const allowedOrigins = [
   "https://gsphere-client.onrender.com",
-  "http://localhost:5500",
-  "http://127.0.0.1:5500",
-  "http://localhost:3000"
+  'http://127.0.0.1:5501',
+  'http://localhost:5501',
+  'http://localhost:5173',
 ];
 
 const corsOptions = 
@@ -32,9 +32,18 @@ const corsOptions =
 //   origin: "https://gsphere-client.onrender.com",
 //   credentials: true
 // };
+
+
+app.options("all", (req, res) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.sendStatus(204); // בלי גוף
+});
+
 app.use(cors(corsOptions));
-app.options
-// app.options("*", cors(corsOptions));
+
 
 
 
