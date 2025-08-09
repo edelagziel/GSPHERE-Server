@@ -55,6 +55,7 @@ async function login(req, res)
                 role:loginUser.role
             };
 
+            const sameSite = getSameSiteValue(req);
 
            const token= jwt.sign(payLoad,process.env.JWT_SECRET,{ expiresIn:"3h" });
            res
@@ -62,7 +63,8 @@ async function login(req, res)
             {
             httpOnly: false,
             secure: true,
-            sameSite: 'Lax',
+            sameSite: sameSite ,
+            // sameSite: 'Lax',
             // sameSite: "none",
             maxAge: 3*60*60*1000
           })
@@ -93,6 +95,22 @@ async function logout(req, res)
     res.json({ message: "Logged out" });
   }
   
+
+
+
+
+  function getSameSiteValue(req) {
+  // מקבל את המקור מהכותרות (לדוגמה: "http://localhost:5501")
+  const origin = req.headers.origin || "";
+
+  // בונה את הכתובת המלאה של השרת (לדוגמה: "http://localhost:3000")
+  const serverOrigin = `${req.protocol}://${req.get('host')}`;
+
+  // משווה בין ה-origin של הבקשה ל-origin של השרת
+  const sameOrigin = origin === serverOrigin;
+
+  return sameOrigin ? 'Lax' : 'None';
+}
 
 
 module.exports ={register,login,logout};
