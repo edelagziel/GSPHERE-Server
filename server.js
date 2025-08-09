@@ -9,6 +9,7 @@ const { verifyToken } = require("./middleware/authService");
 const app = express();
 const serverPort = process.env.PORT || 3000;
 
+
 const corsOptions = {
   origin: "https://gsphere-client.onrender.com",
   credentials: true
