@@ -48,12 +48,19 @@ async function deleteProject(req, res)
 
 async function modifyProject(req, res) 
 {
+    console.log("Enterd");
     try
     {
-        const {title,description,image_url,stage_id,visibility_id,id}=req.body;
+        const {title,description,image_url,stage_id,visibility_id}=req.body;
         const owner_id = req.user.user_id;
-        const projectId=parseInt(id);
-        const result = await modifyProjectById(title,description,image_url,stage_id,visibility_id,projectId,owner_id);
+        const projectid=req.params.id;
+        const projectId=parseInt(projectid);
+        const Stage_id=parseInt(stage_id);
+        const Visibility_id=parseInt(visibility_id);
+
+
+        // const projectId=parseInt(id);
+        const result = await modifyProjectById(title,description,image_url,Stage_id,Visibility_id,projectId,owner_id);
 
         if (result.rowCount === 0)
         {

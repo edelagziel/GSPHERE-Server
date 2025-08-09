@@ -9,10 +9,42 @@ const { verifyToken } = require("./middleware/authService");
 const app = express();
 const serverPort = process.env.PORT || 3000;
 
-const corsOptions = {
-  origin: "https://gsphere-client.onrender.com",
-  credentials: true
+const allowedOrigins = [
+  "https://gsphere-client.onrender.com",
+  'http://127.0.0.1:5501',
+  'http://localhost:5501',
+  'http://localhost:5173',
+];
+
+const corsOptions = 
+{
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    return cb(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
+  allowedHeaders: ["Content-Type","Authorization"]
 };
+
+
+// const corsOptions = {
+//   origin: "https://gsphere-client.onrender.com",
+//   credentials: true
+// };
+
+
+app.options("all", (req, res) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.sendStatus(204); // בלי גוף
+});
+
+app.use(cors(corsOptions));
+
+
 
 
 // app.use(cors({
@@ -20,7 +52,7 @@ const corsOptions = {
 //     credentials: true
 //   }));
  
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
   
 

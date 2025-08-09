@@ -1,5 +1,5 @@
 
-const {createJob,updateJob,deleteJob,updateJobStatus,getMyJobs,getActiveJobs,getJobCandidates,applyJobToPost} = require("../models/jobsModel");
+const {createJob,updateJob,deleteJob,updateJobStatus,getMyJobs,getActiveJobs,getJobCandidates,applyJobToPost,getAllSkills} = require("../models/jobsModel");
 
 async function createJobController(req, res)
  {
@@ -24,11 +24,20 @@ async function createJobController(req, res)
             skills 
         });
 
-        if (result.JobPosts.rows.length === 0)
-        {
-            return res.status(400).json({ error: "Failed to create job. Please check the provided job details." });
-        }
-        res.status(201).json({ message: "Job created successfully", job: result.JobPosts,jobSkill: result.JobPostSkills.skillIds });
+      
+        res.status(201).json({
+            message: "Job created successfully",
+            job: {
+              id: result.JobPosts.id,
+              title: result.JobPosts.title,
+              description: result.JobPosts.description,
+              status_id: result.JobPosts.status_id,
+              location_id: result.JobPosts.location_id,
+              deadline: result.JobPosts.deadline,
+              // אפשר להוסיף skills אם ה-frontend מציג אותם מיד:
+              skills: result.JobPostSkills ? result.JobPostSkills.skillIds : []
+            }
+          });
     } 
     catch (error)
     {
@@ -166,6 +175,18 @@ async function applyToJob(req, res)
     }
 }
 
+async function getSkillsController(req, res) {
+    try 
+    {
+        const result = await getAllSkills();
+        res.status(200).json({ message: "Skills fetched successfully", skills: result.rows });
+    } 
+    catch (error) 
+    {
+        res.status(500).json({ error: "Failed to get skills", details: error.message });
+    }
+}
+
 
 
 module.exports = {
@@ -176,6 +197,7 @@ module.exports = {
     getMyJobsController,
     getActiveJobsController,
     getJobCandidatesController,
-    applyToJob
+    applyToJob,
+    getSkillsController
 };
 
