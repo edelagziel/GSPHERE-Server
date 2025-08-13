@@ -77,12 +77,15 @@ async function getMyJobs(userId)
     if (!recruiter) throw new Error("User is not a recruiter, cannot fetch jobs");
 
     const query = `
-        SELECT jp.*
-        FROM JobPosts jp
-        WHERE jp.recruiter_id = $1
-        ORDER BY jp.created_at DESC
-    `;
-  
+    SELECT 
+      jp.*, 
+      COALESCE(json_agg(jps.skill_id) FILTER (WHERE jps.skill_id IS NOT NULL), '[]') AS skill_ids
+    FROM JobPosts jp
+    LEFT JOIN JobPostSkills jps ON jp.id = jps.job_post_id
+    WHERE jp.recruiter_id = $1
+    GROUP BY jp.id
+    ORDER BY jp.created_at DESC
+  `;
     const values = [userId];
   return pool.query(query, values);
     
