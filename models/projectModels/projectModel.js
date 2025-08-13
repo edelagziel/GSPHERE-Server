@@ -29,19 +29,14 @@ async function modifyProjectById(title, description, image_url, stage_id, visibi
 
 async function getAll_Projects() {
     const query = `
-        SELECT 
-            users.first_name, 
-            users.last_name, 
-            projects.id AS projectid, 
-            projects.owner_id, 
-            projects.title, 
-            projects.description, 
-            projects.image_url
-        FROM projects
-        JOIN users ON users.user_id = projects.owner_id
-        WHERE projects.visibility_id = 1
-        ORDER BY projects.created_at DESC
-    `;
+    SELECT u.first_name, u.last_name, p.id AS projectid, p.owner_id, p.title,
+           p.description, p.image_url, p.created_at, ps.name AS stage_name
+    FROM projects p
+    JOIN users u ON u.user_id = p.owner_id
+    LEFT JOIN projectstages ps ON ps.stage_id = p.stage_id
+    WHERE p.visibility_id = 1
+    ORDER BY p.created_at DESC
+  `;
     return pool.query(query);
 }
 
