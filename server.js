@@ -59,8 +59,8 @@ app.options("all", (req, res) =>
 
 
 // MIDDLEWARES
-app.use(express.urlencoded({ extended: true }));//help me parse the body of the request is coming as form and parse to obj 
-app.use(express.json());//help me parse the body of the request is coming as json and parse to obj 
+app.use(express.urlencoded({ extended: true ,limit: "10mb"}));//help me parse the body of the request is coming as form and parse to obj 
+app.use(express.json({ limit: "10mb"}));//help me parse the body of the request is coming as json and parse to obj 
 app.use(cookieParser());
 //Routes
 app.use("/api/auth", require("./routes/auth"));
@@ -68,6 +68,8 @@ app.use("/api/projects", verifyToken,require("./routes/prodects/projects"));
 app.use("/api/jobs",verifyToken,require("./routes/jobs"));
 app.use("/api/news", verifyToken,require("./routes/news.routes"));
 app.use("/api/profile", verifyToken,require("./routes/routes.profile"));
+app.use("/api/uplodeFile", verifyToken, require("./routes/uplodeFile"));
+
 
 
 

@@ -8,6 +8,7 @@ projectMembersRouters.get("/:id", ProjectController.getProjectMemberByIdControll
 projectMembersRouters.post("/", ProjectController.addProjectMemberController);
 projectMembersRouters.put("/:id", ProjectController.updateProjectMemberRoleController);
 
+
 // projectMembersRouters.delete("/leave/:id", ProjectController.removeProjectMemberController);
 
 projectMembersRouters.delete("/:id", ProjectController.removeProjectMemberController);

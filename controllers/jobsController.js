@@ -144,7 +144,7 @@ async function getJobCandidatesController(req, res)
         const result = await getJobCandidates(id);
         if (result.rowCount === 0)
         {
-            return res.status(404).json({ message: "No candidates found", candidates: [] });
+            return res.status(200).json({ message: "No candidates found", candidates: [] });
         }
         res.status(200).json({ message: "Candidates fetched successfully", candidates: result.rows });
     } 
