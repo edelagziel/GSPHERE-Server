@@ -77,12 +77,15 @@ async function getMyJobs(userId)
     if (!recruiter) throw new Error("User is not a recruiter, cannot fetch jobs");
 
     const query = `
-        SELECT jp.*
-        FROM JobPosts jp
-        WHERE jp.recruiter_id = $1
-        ORDER BY jp.created_at DESC
-    `;
-  
+    SELECT 
+      jp.*, 
+      COALESCE(json_agg(jps.skill_id) FILTER (WHERE jps.skill_id IS NOT NULL), '[]') AS skill_ids
+    FROM JobPosts jp
+    LEFT JOIN JobPostSkills jps ON jp.id = jps.job_post_id
+    WHERE jp.recruiter_id = $1
+    GROUP BY jp.id
+    ORDER BY jp.created_at DESC
+  `;
     const values = [userId];
   return pool.query(query, values);
     
@@ -133,9 +136,18 @@ async function isRecruiter(userId) {
         u.last_name,
         u.email,
         ja.submitted_at,
-        ast.name AS application_status
+        ast.name AS application_status,
+        pd.bio,
+        pd.cv_url,
+        pd.location AS profile_location,
+        pd.experience,
+        pd.profile_picture_url,
+        pd.website_url,
+        pd.github_url,
+        pd.linkedin_url
       FROM JobApplications ja
       JOIN Users u ON ja.user_id = u.user_id
+      LEFT JOIN ProfileDetails pd ON u.user_id = pd.user_id
       JOIN ApplicationStatus ast ON ja.status_id = ast.id
       WHERE ja.job_post_id = $1
       ORDER BY ja.submitted_at DESC
