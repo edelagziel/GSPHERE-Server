@@ -179,6 +179,37 @@ async function isRecruiter(userId) {
     `;
     return pool.query(query);
   }
+
+  async function getJobById(jobId) {
+    const query = `
+      SELECT 
+        jp.id,
+        jp.title,
+        jp.description,
+        jp.status_id,
+        jp.location_id,
+        jp.deadline,
+        jp.created_at,
+        jp.recruiter_id,
+        u.first_name AS recruiter_first_name,
+        u.last_name AS recruiter_last_name,
+        u.email AS recruiter_email,
+        ARRAY_REMOVE(ARRAY_AGG(js.id), NULL) AS skill_ids,
+        ARRAY_REMOVE(ARRAY_AGG(js.name), NULL) AS skill_names
+      FROM JobPosts jp
+      JOIN Users u ON jp.recruiter_id = u.user_id
+      LEFT JOIN JobPostSkills jps ON jp.id = jps.job_post_id
+      LEFT JOIN JobSkills js ON jps.skill_id = js.id
+      WHERE jp.id = $1
+      GROUP BY 
+        jp.id, jp.title, jp.description, jp.status_id, jp.location_id, jp.deadline, jp.created_at, jp.recruiter_id,
+        u.first_name, u.last_name, u.email
+      LIMIT 1
+    `;
+    const values = [jobId];
+    return pool.query(query, values);
+  }
+  
   
 
 module.exports = {
@@ -190,5 +221,6 @@ module.exports = {
     getActiveJobs,
     getJobCandidates,
     applyJobToPost,
-    getAllSkills
+    getAllSkills,
+    getJobById
 };

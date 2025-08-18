@@ -46,13 +46,18 @@ async function getProjectMemberByIdController(req, res) {
     }
 }
 
-async function addProjectMemberController(req, res) {
-    try {
+async function addProjectMemberController(req, res)
+ {
+    try 
+    {
+        console.log(req.user);
         const { projectId } = req.params;
-        const { user_id, role } = req.body;
+        // const { user_id, role } = req.body;
+        const user_id = req.user.user_id ;
         const project_id = parseInt(projectId);
         const userId = parseInt(user_id);
-        const role_id = parseInt(role);
+        // const role_id = parseInt(role);
+        const role_id = 12;
 
         if (isNaN(project_id) || isNaN(userId) || isNaN(role_id)) 
         {
