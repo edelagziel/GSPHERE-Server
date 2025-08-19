@@ -76,11 +76,26 @@ async function get_ProjectMemberByUserAndProject(user_id, project_id) {
     return pool.query(query, values);
 }
 
+
+async function checkIfOwner(user_id, project_id) {
+    const query = `
+      SELECT 1
+      FROM projects
+      WHERE id = $1 AND owner_id = $2
+      LIMIT 1;
+    `;
+    const values = [project_id, user_id];
+    const result = await pool.query(query, values);
+    return result.rowCount > 0; 
+  }
+  
+
 module.exports = {
     getAll_ProjectMembers,
     get_ProjectMemberById,
     add_ProjectMember,
     update_ProjectMemberRole,
     remove_ProjectMember,
-    get_ProjectMemberByUserAndProject
+    get_ProjectMemberByUserAndProject,
+    checkIfOwner
 };

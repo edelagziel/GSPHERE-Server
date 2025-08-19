@@ -5,7 +5,8 @@ const {
     add_ProjectMember,
     update_ProjectMemberRole,
     remove_ProjectMember,
-    get_ProjectMemberByUserAndProject
+    get_ProjectMemberByUserAndProject,
+    checkIfOwner
 } = require("../../models/projectModels/projectMemberModel");
 
 async function getAllProjectMembersController(req, res) {
@@ -107,21 +108,34 @@ async function updateProjectMemberRoleController(req, res) {
 }
 
 async function removeProjectMemberController(req, res) {
-    try {
-        const { id, projectId } = req.params;
-        const member_id = parseInt(id);
+    try 
+    {
+        const { projectId } = req.params;
+        const user_id = req.user.user_id ;
+
+        const member_id = parseInt(user_id);
         const project_id = parseInt(projectId);
 
-        if (isNaN(project_id) || isNaN(member_id)) {
+        if (isNaN(project_id) || isNaN(member_id)) 
+        {
             return res.status(400).json({ error: "Invalid project_id or member_id" });
         }
+        const isOwner = await checkIfOwner(member_id, project_id);
+        if (isOwner) 
+        {
+            return res.status(403).json({ error: "Cannot remove owner without confirmation", owner: true });
+        }
+
 
         const result = await remove_ProjectMember(member_id, project_id);
-        if (result.rowCount === 0) {
+        if (result.rowCount === 0) 
+        {
             return res.status(404).json({ error: "Member not found or already deleted" });
         }
         res.status(200).json({ message: "Member deleted successfully" });
-    } catch (error) {
+    } 
+    catch (error) 
+    {
         return res.status(500).json({ error: "Failed to delete member" });
     }
 }
