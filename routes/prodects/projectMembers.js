@@ -11,7 +11,7 @@ projectMembersRouters.put("/:id", ProjectController.updateProjectMemberRoleContr
 
 // projectMembersRouters.delete("/leave/:id", ProjectController.removeProjectMemberController);
 
-projectMembersRouters.delete("/:id", ProjectController.removeProjectMemberController);
+projectMembersRouters.delete("/", ProjectController.removeProjectMemberController);
 
 
 module.exports = projectMembersRouters;

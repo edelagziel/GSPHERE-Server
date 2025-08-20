@@ -29,7 +29,9 @@ async function deleteProject(req, res)
 {
     try
     {
-        const {id}=req.body;
+        // const {id}=req.body;
+        const id=req.params.id;
+
         const owner_id = req.user.user_id;
         const projectId=parseInt(id);
         const result = await deleteProjectById(owner_id,projectId);
@@ -59,12 +61,18 @@ async function modifyProject(req, res)
         const Visibility_id=parseInt(visibility_id);
 
 
+        const  Tempresult=await get_ProjectById(projectid);
+        if(Tempresult.rows.length===0)
+        {
+            return res.status(404).json({ error: "Project not found" });
+        }
+
         // const projectId=parseInt(id);
         const result = await modifyProjectById(title,description,image_url,Stage_id,Visibility_id,projectId,owner_id);
 
         if (result.rowCount === 0)
         {
-            return res.status(404).json({ error: "Project not found or you are not authorized" });
+            return res.status(404).json({ error: "Only the project owner is authorized to modify this project." });
         }
         res.status(200).json({ message: "project modified", project: result.rows[0] });
     }

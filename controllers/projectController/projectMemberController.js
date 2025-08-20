@@ -5,10 +5,12 @@ const {
     add_ProjectMember,
     update_ProjectMemberRole,
     remove_ProjectMember,
-    get_ProjectMemberByUserAndProject
+    get_ProjectMemberByUserAndProject,
+    checkIfOwner
 } = require("../../models/projectModels/projectMemberModel");
 
-async function getAllProjectMembersController(req, res) {
+async function getAllProjectMembersController(req, res) 
+{
     try {
         const { projectId } = req.params;
         const project_id = parseInt(projectId);
@@ -25,7 +27,8 @@ async function getAllProjectMembersController(req, res) {
     }
 }
 
-async function getProjectMemberByIdController(req, res) {
+async function getProjectMemberByIdController(req, res) 
+{
     try {
         const { id, projectId } = req.params;
         const member_id = parseInt(id);
@@ -46,13 +49,17 @@ async function getProjectMemberByIdController(req, res) {
     }
 }
 
-async function addProjectMemberController(req, res) {
-    try {
+async function addProjectMemberController(req, res)
+ {
+    try 
+    {
         const { projectId } = req.params;
-        const { user_id, role } = req.body;
+        // const { user_id, role } = req.body;
+        const user_id = req.user.user_id ;
         const project_id = parseInt(projectId);
         const userId = parseInt(user_id);
-        const role_id = parseInt(role);
+        // const role_id = parseInt(role);
+        const role_id = 12;
 
         if (isNaN(project_id) || isNaN(userId) || isNaN(role_id)) 
         {
@@ -77,8 +84,11 @@ async function addProjectMemberController(req, res) {
     }
 }
 
-async function updateProjectMemberRoleController(req, res) {
-    try {
+async function updateProjectMemberRoleController(req, res)
+ {
+    try 
+    {
+        const user_id = req.user.user_id ;
         const { id, projectId } = req.params;
         const { role } = req.body;
         const member_id = parseInt(id);
@@ -89,6 +99,15 @@ async function updateProjectMemberRoleController(req, res) {
         {
             return res.status(400).json({ error: "Invalid project_id, member_id, or role" });
         }
+        if(user_id!=member_id)
+        {
+            return res.status(403).json({ error: "You cannot change another user's role" });
+        }
+        const isOwner = await checkIfOwner(member_id, project_id);
+        if (isOwner) 
+        {
+            return res.status(403).json({ error: "Cannot change the owner's role", owner: true });
+        }
 
         const result = await update_ProjectMemberRole(member_id, role_id, project_id);
         if (result.rows.length === 0)
@@ -96,27 +115,42 @@ async function updateProjectMemberRoleController(req, res) {
             return res.status(404).json({ error: "Member not found or role not updated" });
         }
         res.status(200).json({ message: "Member role updated successfully", member: result.rows[0] });
-    } catch (error) {
+    } 
+    catch (error) 
+    {
         return res.status(500).json({ error: "Failed to modify member role" });
     }
 }
 
 async function removeProjectMemberController(req, res) {
-    try {
-        const { id, projectId } = req.params;
-        const member_id = parseInt(id);
+    try 
+    {
+        const { projectId } = req.params;
+        const user_id = req.user.user_id ;
+
+        const member_id = parseInt(user_id);
         const project_id = parseInt(projectId);
 
-        if (isNaN(project_id) || isNaN(member_id)) {
+        if (isNaN(project_id) || isNaN(member_id)) 
+        {
             return res.status(400).json({ error: "Invalid project_id or member_id" });
         }
+        const isOwner = await checkIfOwner(member_id, project_id);
+        if (isOwner) 
+        {
+            return res.status(403).json({ error: "Cannot remove owner without confirmation", owner: true });
+        }
+
 
         const result = await remove_ProjectMember(member_id, project_id);
-        if (result.rowCount === 0) {
+        if (result.rowCount === 0) 
+        {
             return res.status(404).json({ error: "Member not found or already deleted" });
         }
         res.status(200).json({ message: "Member deleted successfully" });
-    } catch (error) {
+    } 
+    catch (error) 
+    {
         return res.status(500).json({ error: "Failed to delete member" });
     }
 }
