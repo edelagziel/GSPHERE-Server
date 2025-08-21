@@ -192,16 +192,21 @@ async function getjob(req, res)
 {
     try 
     {
+        console.log("get job enter funk");
         const { id } = req.params;
         const jobId = parseInt(id);
         if (isNaN(jobId)) 
         {
             return res.status(400).json({ error: "Invalid job id" });
         }
+        console.log("valid job id ");
+
         const result = await getJobById(jobId);
         if (!result || result.rows.length === 0) {
             return res.status(404).json({ error: "Job not found" });
         }
+        console.log("result good ");
+
         res.status(200).json({ message: "Job fetched successfully", job: result.rows[0] });
     } 
     catch (error) 
