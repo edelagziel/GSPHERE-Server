@@ -17,7 +17,7 @@ async function uploadFileController(req, res) {
   } catch (err)
    {
     console.error("Upload error:", err);
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.message });
   }
 }
 
